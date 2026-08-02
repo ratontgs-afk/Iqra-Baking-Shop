@@ -9,7 +9,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#D4880F">
 <link rel="manifest" href="manifest.json">
-<script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -87,6 +86,11 @@ body{font-family:'Noto Sans Bengali',sans-serif;background:var(--bg);color:var(-
     #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
     @page { margin: 1cm; }
 }
+
+/* ট্যাব স্টাইল */
+.tab-container { display: flex; gap: 5px; background: #FDF6EC; padding: 4px; border-radius: 12px; border: 1px solid var(--bd); }
+.tab-btn { flex: 1; border: none; background: transparent; padding: 8px; border-radius: 8px; font-weight: 700; font-size: 13px; color: var(--mt); cursor: pointer; font-family: inherit; transition: all .2s; }
+.tab-btn.active { background: var(--ac); color: #fff; box-shadow: 0 2px 6px rgba(212,136,15,.3); }
 
 @media(max-width:768px){
     .sidebar{width:260px;transform:translateX(-100%);z-index:70}
@@ -276,9 +280,63 @@ function dSh(id){var s=gS(id);if(!s)return;document.getElementById("MB").innerHT
 
 function sIR(pid,qty,px){var p=pid?gP(pid):null;var u=p?p.unit:"";var h='<div class="sir" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:5px;align-items:end;margin-bottom:8px"><div style="grid-column:1/-1"><label class="fl">পণ্য</label><select class="fi sp" onchange="uST(\''+px+'\')"><option value="">নির্বাচন</option>';for(var i=0;i<D.products.length;i++){var pr=D.products[i];h+='<option value="'+pr.id+'"'+(pr.id==pid?' selected':'')+'>'+pr.name+' ('+fT(pr.price)+'/'+pr.unit+')</option>'}h+='</select></div><div><label class="fl">পরিমান</label><input class="fi sq" type="number" step="any" value="'+(qty||"")+'" min="1" oninput="uST(\''+px+'\')"></div><div><label class="fl">একক</label><select class="fi su" onchange="uST(\''+px+'\')"><option value="">-</option><option'+(u==="পাউন্ড"?" selected":"")+'>পাউন্ড</option><option'+(u==="কেজি"?" selected":"")+'>কেজি</option><option'+(u==="গ্রাম"?" selected":"")+'>গ্রাম</option><option'+(u==="লিটার"?" selected":"")+'>লিটার</option><option'+(u==="মিলিলিটার"?" selected":"")+'>মিলিলিটার</option><option'+(u==="প্যাকেট"?" selected":"")+'>প্যাকেট</option><option'+(u==="ডজন"?" selected":"")+'>ডজন</option><option'+(u==="পিছ"?" selected":"")+'>পিছ</option></select></div><div><label class="fl">উপমোট</label><input class="fi sit" value="'+fT(0)+'" readonly style="background:#F5F0E8"></div><button class="bt bd sm" style="padding:10px 12px" onclick="this.closest(\'.sir\').remove();uST(\''+px+'\')"><i class="fas fa-times"></i></button></div>';return h;}
 
-function rSa(){var today=td(),tS=[],aS=D.sales.slice();for(var i=0;i<D.sales.length;i++)if(D.sales[i].date===today)tS.push(D.sales[i]);tS.sort(function(a,b){return b.id-a.id});aS.sort(function(a,b){return b.id-a.id});var tT=0,tP=0;for(var i=0;i<tS.length;i++){tT+=tS[i].grandTotal;tP+=tS[i].paid}var tDue=0;for(var i=0;i<tS.length;i++)tDue+=tS[i].due;var h='<div class="ps"><div class="np" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:6px"><div style="display:flex;gap:5px"><button class="bt sm bp" style="background:var(--ac);color:#fff" onclick="sTb(\'today\')" id="tT">আজ</button><button class="bt bs sm" onclick="sTb(\'all\')" id="tA">সবগুলো</button></div><button class="bt bp sm" onclick="mSa()"><i class="fas fa-plus"></i>নতুন বিক্রয়</button></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="tSm" class="sg"><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">আজকের বিক্রয়</div><div style="font-size:18px;font-weight:800;margin-top:2px">'+fT(tT)+'</div></div><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">আদায়</div><div style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px">'+fT(tP)+'</div></div><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">বাকি</div><div style="font-size:18px;font-weight:800;color:var(--no);margin-top:2px">'+fT(tDue)+'</div></div></div><div class="cd" style="padding:0"><div class="scrl" style="overflow-x:auto"><table class="dt"><thead><tr><th>তারিখ</th><th>দোকান</th><th>আইটেম</th><th>মোট</th><th>বাকি</th><th class="np">অ্যাকশন</th></tr></thead><tbody id="sTB">'+sRs(tS)+'</tbody></table></div>';if(!tS.length)h+='<div style="text-align:center;padding:24px;color:var(--mt)">আজ বিক্রয় নেই</div>';h+='</div></div>';return h}
+function rSa(){
+    var today=td();
+    var tS=[], aS=[];
+    for(var i=0;i<D.sales.length;i++){
+        if(D.sales[i].date===today) tS.push(D.sales[i]);
+        aS.push(D.sales[i]);
+    }
+    tS.sort(function(a,b){return b.id-a.id});
+    aS.sort(function(a,b){return b.id-a.id});
+    
+    var tT=0,tP=0,tDue=0;
+    for(var i=0;i<tS.length;i++){tT+=tS[i].grandTotal;tP+=tS[i].paid;tDue+=tS[i].due;}
+    
+    var h='<div class="ps">';
+    // ট্যাব এবং নতুন বিক্রয় বাটন
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">';
+    h+='<div class="tab-container">';
+    h+='<button class="tab-btn active" onclick="sTb(\'today\')" id="tT">আজকের বিক্রয়</button>';
+    h+='<button class="tab-btn" onclick="sTb(\'all\')" id="tA">সব বিক্রয়</button>';
+    h+='</div>';
+    h+='<button class="bt bp sm" onclick="mSa()"><i class="fas fa-plus"></i>নতুন বিক্রয়</button>';
+    h+='</div>';
+    
+    // আজকের সামারি
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="tSm" class="sg"><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">আজকের বিক্রয়</div><div style="font-size:18px;font-weight:800;margin-top:2px">'+fT(tT)+'</div></div><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">আদায়</div><div style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px">'+fT(tP)+'</div></div><div class="cd" style="padding:10px;text-align:center"><div style="font-size:10px;color:var(--mt)">বাকি</div><div style="font-size:18px;font-weight:800;color:var(--no);margin-top:2px">'+fT(tDue)+'</div></div></div>';
+    
+    // টেবিল
+    h+='<div class="cd" style="padding:0"><div class="scrl" style="overflow-x:auto"><table class="dt"><thead><tr><th>তারিখ</th><th>দোকান</th><th>আইটেম</th><th>মোট</th><th>বাকি</th><th class="np">অ্যাকশন</th></tr></thead><tbody id="sTB">'+sRs(tS)+'</tbody></table></div>';
+    if(!tS.length)h+='<div style="text-align:center;padding:24px;color:var(--mt)" id="sEmpty">আজ বিক্রয় নেই</div>';
+    h+='</div></div>';
+    return h;
+}
 function sRs(sl){var h='';for(var i=0;i<sl.length;i++){var s=sl[i],items='';for(var j=0;j<s.items.length;j++){var it=s.items[j];items+=it.name+' ('+it.qty+' '+(it.unit||'')+'), ';}h+='<tr><td style="font-size:11px">'+fD(s.date)+'</td><td style="font-weight:600;font-size:12px">'+s.shopName+'</td><td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+items+'</td><td style="font-weight:700;font-size:12px">'+fT(s.grandTotal)+'</td><td style="color:'+(s.due>0?'var(--no)':'var(--ok)')+';font-weight:600;font-size:12px">'+fT(s.due)+'</td><td class="np" style="white-space:nowrap"><button class="bt bs sm" style="padding:4px 7px" onclick="eSa('+s.id+')"><i class="fas fa-pen" style="font-size:10px"></i></button> <button class="bt bg sm" style="padding:4px 7px" onclick="mPy('+s.id+')"'+(s.due<=0?' disabled style="padding:4px 7px;opacity:.3"':'')+'><i class="fas fa-money-bill" style="font-size:10px"></i></button> <button class="bt bd sm" style="padding:4px 7px" onclick="dSa('+s.id+')"><i class="fas fa-trash" style="font-size:10px"></i></button></td></tr>'}return h}
-function sTb(t){var today=td();var sl;if(t==="today"){sl=[];for(var i=0;i<D.sales.length;i++)if(D.sales[i].date===today)sl.push(D.sales[i])}else sl=D.sales.slice();sl.sort(function(a,b){return b.id-a.id});document.getElementById("sTB").innerHTML=sRs(sl);document.getElementById("tT").style.background=t==="today"?"var(--ac)":"";document.getElementById("tT").style.color=t==="today"?"#fff":"";document.getElementById("tA").style.background=t==="all"?"var(--ac)":"";document.getElementById("tA").style.color=t==="all"?"#fff":"";document.getElementById("tSm").style.display=t==="today"?"":"none"}
+function sTb(t){
+    var today=td();
+    var sl=[];
+    if(t==="today"){ for(var i=0;i<D.sales.length;i++) if(D.sales[i].date===today) sl.push(D.sales[i]); }
+    else { sl = D.sales.slice(); }
+    sl.sort(function(a,b){return b.id-a.id});
+    
+    document.getElementById("sTB").innerHTML = sRs(sl);
+    
+    // ট্যাব স্টাইল টগল
+    var tTEl = document.getElementById("tT");
+    var tAEl = document.getElementById("tA");
+    if(t === "today"){
+        tTEl.classList.add('active');
+        tAEl.classList.remove('active');
+        document.getElementById("tSm").style.display = "grid";
+        document.getElementById("sEmpty").innerHTML = "আজ বিক্রয় নেই";
+    } else {
+        tTEl.classList.remove('active');
+        tAEl.classList.add('active');
+        document.getElementById("tSm").style.display = "none";
+        document.getElementById("sEmpty").innerHTML = "কোনো বিক্রয় নেই";
+    }
+}
 
 function mSa(){if(!D.shops.length){tt("প্রথমে দোকান যোগ করুন","wn");return}var shopOpts='';for(var i=0;i<D.shops.length;i++)shopOpts+='<option value="'+D.shops[i].id+'">'+D.shops[i].name+'</option>';document.getElementById("MB").innerHTML='<div class="mb-close" style="text-align:right;margin-bottom:10px"><button class="bt bs sm" onclick="cm()"><i class="fas fa-times"></i></button></div><h2 style="font-size:18px;font-weight:800;margin-bottom:18px">নতুন বিক্রয়</h2><div style="display:flex;flex-direction:column;gap:14px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="fl">দোকান</label><select class="fi" id="nSS">'+shopOpts+'</select></div><div><label class="fl">তারিখ</label><input class="fi" id="nSD" type="date" value="'+td()+'"></div></div><div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><label class="fl" style="margin:0">আইটেম</label><button class="bt bs sm" onclick="aIR(\'n\')"><i class="fas fa-plus"></i>যোগ</button></div><div id="nIR">'+sIR("","","n")+'</div></div><div style="background:#FDF6EC;border-radius:10px;padding:12px;display:flex;justify-content:space-between"><span style="font-weight:600">মোট</span><span style="font-weight:800;font-size:16px" id="nGT">'+fT(0)+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="fl">পরিশোধিত</label><input class="fi" id="nPD" type="number" value="0" oninput="uSD()"></div><div><label class="fl">বাকি</label><input class="fi" id="nDD" type="number" value="0" readonly style="background:#F5F0E8"></div></div><div><label class="fl">নোট</label><input class="fi" id="nNT"></div><div style="display:flex;gap:8px;justify-content:flex-end"><button class="bt bp" onclick="sSa()"><i class="fas fa-check"></i>সংরক্ষণ</button></div></div>';om()}
 function aIR(px){var c=document.getElementById(px==="n"?"nIR":"eIR");var d=document.createElement("div");d.innerHTML=sIR("","",px);c.appendChild(d.firstElementChild)}
