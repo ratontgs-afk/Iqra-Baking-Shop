@@ -1,0 +1,20 @@
+{
+  "name": "Iqra Baking Shop",
+  "short_name": "Iqra POS",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF9F0",
+  "theme_color": "#D4880F",
+  "icons": [
+    {
+      "src": "https://z-cdn-media.chatglm.cn/files/dd565b75-991f-4a84-8d96-cfab5d0e3e9b.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    },
+    {
+      "src": "https://z-cdn-media.chatglm.cn/files/dd565b75-991f-4a84-8d96-cfab5d0e3e9b.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}
